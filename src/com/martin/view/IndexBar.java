@@ -13,7 +13,7 @@ import android.view.View;
 /**
  * Android中有两个坐标系，View中的原点在左上角，但是绘制时从左下角开始绘制
  * 
- * @author hbm
+ * @author Martin.Han
  * 
  */
 public class IndexBar extends View {

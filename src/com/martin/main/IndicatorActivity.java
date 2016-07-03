@@ -1,4 +1,4 @@
-package com.martin.indicator;
+package com.martin.main;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +25,7 @@ public class IndicatorActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_index);
 		viewPager=(ViewPager) findViewById(R.id.viewPager);
 		indicator=(Indicator) findViewById(R.id.indicator);
 		initData();
