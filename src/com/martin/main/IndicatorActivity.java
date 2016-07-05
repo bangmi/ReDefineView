@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.Window;
 
 import com.martin.view.R;
 import com.martin.view.Indicator;
@@ -25,6 +26,7 @@ public class IndicatorActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_index);
 		viewPager=(ViewPager) findViewById(R.id.viewPager);
 		indicator=(Indicator) findViewById(R.id.indicator);
@@ -33,14 +35,14 @@ public class IndicatorActivity extends FragmentActivity {
 	}
 
 	private void initData() {
-		for (int i = 0; i <3; i++) {
-			fragments.add(new BaseFragment(titles.get(i)));
+		for (int i = 0; i <6; i++) {
+			fragments.add(new BaseFragment(titles.get(1)));
 		}
 		pagerAdapter=new FragmentPagerAdapter(getSupportFragmentManager()) {
 			
 			@Override
 			public int getCount() {
-				return titles.size();
+				return 6;
 			}
 			
 			@Override
