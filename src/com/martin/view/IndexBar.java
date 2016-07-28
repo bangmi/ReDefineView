@@ -94,9 +94,11 @@ public class IndexBar extends View {
 			canvas.drawCircle(cellWidth / 2, touchY, 30, cPaint);
 			int position = (int) (touchY / cellHeight);
 			// 避免indexs[]越界
-			if (position < indexs.length) {
+			if (position < indexs.length && position >= 0) {
+				x = cellWidth / 2 - mPaint.measureText(indexs[position]) / 2;
+				y = cellHeight * position + cellHeight / 2 + rect.height() / 2;
 				tPaint.getTextBounds(indexs[position], 0, 1, rect);
-				canvas.drawText(indexs[position], cellWidth / 2 - mPaint.measureText(indexs[position]) / 2, cellHeight * position + cellHeight / 2 + rect.height() / 2, tPaint);
+				canvas.drawText(indexs[position], x, y, tPaint);
 			}
 		}
 	}
@@ -125,6 +127,7 @@ public class IndexBar extends View {
 						listener.index(indexs[touchIndex]);
 					}
 				}
+				this.invalidate();
 			}
 			break;
 		case MotionEvent.ACTION_UP:
@@ -133,11 +136,12 @@ public class IndexBar extends View {
 			}
 			isTouched = false;
 			flag = -1;
+			this.invalidate();
 			break;
 
 		}
-		// 只要触发onTouchEvent就重绘控件
-		this.invalidate();
+		// 只要触发onTouchEvent就重绘控件,这个地方调用会增加绘制的次数
+		// this.invalidate();
 		return true;
 	}
 

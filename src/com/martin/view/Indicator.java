@@ -103,11 +103,7 @@ public class Indicator extends LinearLayout {
 		mPath.lineTo(cellWidth, 0);
 		mPath.close();
 		// 指示滚动条显示多少个tab
-		View view = container.getChildAt(1);
-		LinearLayout.LayoutParams params = (LayoutParams) view.getLayoutParams();
-		System.out.println(params.width);
 
-		
 	}
 
 	// 绘制本身，如果本身是ViewGroup,且没有背景则跳过此函数
@@ -137,7 +133,7 @@ public class Indicator extends LinearLayout {
 			params.width = 1080 / tabCount;
 			view.setLayoutParams(params);
 		}
-		
+
 	}
 
 	// 指示游标参数改变，数显Views
