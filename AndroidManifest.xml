@@ -24,6 +24,7 @@
         </activity>
         <activity android:name="com.martin.main.IndexBarActivity" />
         <activity android:name="com.martin.main.IndicatorActivity" />
+        <activity android:name="com.martin.main.ProgressBarActivity" />
     </application>
 
 </manifest>

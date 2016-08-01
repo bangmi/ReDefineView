@@ -13,6 +13,7 @@ import com.martin.view.R;
 public class HomeActivity extends Activity implements OnClickListener {
 	private Button indicator;
 	private Button indexBar;
+	private Button progressBar;
 	private Intent intent = new Intent();
 
 	@Override
@@ -26,9 +27,11 @@ public class HomeActivity extends Activity implements OnClickListener {
 	private void initUI() {
 		indicator = (Button) findViewById(R.id.indicator);
 		indexBar = (Button) findViewById(R.id.indexbar);
-
+		progressBar=(Button) findViewById(R.id.progressBar);
+		
 		indicator.setOnClickListener(this);
 		indexBar.setOnClickListener(this);
+		progressBar.setOnClickListener(this);
 	}
 
 	@Override
@@ -41,6 +44,10 @@ public class HomeActivity extends Activity implements OnClickListener {
 
 		case R.id.indicator:
 			intent.setClass(this, IndicatorActivity.class);
+			startActivity(intent);
+			break;
+		case R.id.progressBar:
+			intent.setClass(this, ProgressBarActivity.class);
 			startActivity(intent);
 			break;
 		}
