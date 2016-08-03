@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Cap;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.ProgressBar;
@@ -20,22 +21,23 @@ public class HorizontalProgressBar extends ProgressBar {
 	private final static int DEFAULT_TEXT_COLOR = 0x44ff0000;
 	private final static int DEFAULT_TEXT_OFFSET = 10;
 
-	private int mTextSize = sp2px(DEFAULT_TEXT_SIZE);
-	private int mTextColor = DEFAULT_TEXT_COLOR;
-	private int mTextOffSet = dp2px(DEFAULT_TEXT_OFFSET);
+	protected int mTextSize = sp2px(DEFAULT_TEXT_SIZE);
+	protected int mTextColor = DEFAULT_TEXT_COLOR;
+	protected int mTextOffSet = dp2px(DEFAULT_TEXT_OFFSET);
 
-	private int mReachColor = DEFAULT_REACH_COLOR;
-	private int mReachHeight = dp2px(DEFAULT_REACH_HEIGHT);
-	private int mUnReachColor = DEFAULT_UNREACH_COLOR;
-	private int mUnReachHeight = dp2px(DEFAULT_UNREACH_HEIGHT);
+	protected int mReachColor = DEFAULT_REACH_COLOR;
+	protected int mReachHeight = dp2px(DEFAULT_REACH_HEIGHT);
+	protected int mUnReachColor = DEFAULT_UNREACH_COLOR;
+	protected int mUnReachHeight = dp2px(DEFAULT_UNREACH_HEIGHT);
 
-	private Paint mPaint;
+	protected Paint mPaint;
 	private int mRealWidth;
 
 	public HorizontalProgressBar(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		mPaint = new Paint();
 		mPaint.setAntiAlias(true);
+		mPaint.setStrokeCap(Cap.ROUND);
 		obtainStyleValue(attrs);
 	}
 
@@ -68,7 +70,6 @@ public class HorizontalProgressBar extends ProgressBar {
 
 	@Override
 	protected synchronized void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
 		int widthMode = MeasureSpec.getMode(widthMeasureSpec);
 		int widthVal = MeasureSpec.getSize(widthMeasureSpec);
 
@@ -91,27 +92,27 @@ public class HorizontalProgressBar extends ProgressBar {
 		boolean isNeedUnReach = false;
 
 		float radio = getProgress() * 1.0f / getMax();
-		float progressX = radio * mRealWidth;
-
-		String text = radio*100 + "%";
+		String text = String.format("%.1f", radio * 100) + "%";
 		float textWidth = mPaint.measureText(text);
-		if (progressX + textWidth > mRealWidth) {
-			progressX = mRealWidth - textWidth;
+		float progressX = radio * (mRealWidth - textWidth - mTextOffSet * 2);
+		if (progressX + textWidth + mTextOffSet * 2 > mRealWidth) {
+			progressX = mRealWidth - textWidth - mTextOffSet * 2;
 			isNeedUnReach = true;
 		}
-		float endX = progressX - mTextOffSet / 2;
+		// 绘制进度
+		float endX = progressX;
 		if (endX > 0) {
 			mPaint.setColor(mReachColor);
-			System.out.println(mReachColor);
 			mPaint.setStrokeWidth(mReachHeight);
 			canvas.drawLine(0, 0, endX, 0, mPaint);
 		}
+		// 绘制数字
 		mPaint.setColor(mTextColor);
-		float y=-(mPaint.ascent()+mPaint.descent())/2;
-		canvas.drawText(text, progressX, y, mPaint);
-		
+		float y = -(mPaint.ascent() + mPaint.descent()) / 2;
+		canvas.drawText(text, progressX + mTextOffSet, y, mPaint);
+		// 绘制未到达的进度
 		if (!isNeedUnReach) {
-			float startX=progressX+mTextOffSet/2+textWidth;
+			float startX = progressX + mTextOffSet * 2 + textWidth;
 			mPaint.setColor(mUnReachColor);
 			mPaint.setStrokeWidth(mUnReachHeight);
 			canvas.drawLine(startX, 0, mRealWidth, 0, mPaint);
@@ -142,12 +143,12 @@ public class HorizontalProgressBar extends ProgressBar {
 		return result;
 	}
 
-	private int dp2px(int dpValue) {
+	protected int dp2px(int dpValue) {
 		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, getResources()
 				.getDisplayMetrics());
 	}
 
-	private int sp2px(int spValue) {
+	protected int sp2px(int spValue) {
 		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, spValue, getResources()
 				.getDisplayMetrics());
 	}

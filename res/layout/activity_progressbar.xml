@@ -10,9 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:progress="10"
+        android:progress="0"
         martin:progressBar_reach_color="#ff0000"
+        martin:progressBar_reach_height="4dp"
         martin:progressBar_text_color="#ff0000"
+        martin:progressBar_text_offset="3dp"
         martin:progressBar_text_size="16sp"
         martin:progressBar_unreach_color="#44ff0000" >
     </com.martin.view.HorizontalProgressBar>
@@ -21,8 +23,36 @@
         android:id="@+id/progressBar2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:progress="100" >
+        android:progress="10"
+        martin:progressBar_reach_color="#44ff0000"
+        martin:radius="35dp" >
     </com.martin.view.HorizontalProgressBar>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
+
+    <com.martin.view.RoundProgressBar
+        android:id="@+id/roundProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:progress="0"
+        martin:progressBar_reach_color="#ff0000"
+        martin:progressBar_text_color="#ff0000"
+        martin:progressBar_unreach_color="#44ff0000"
+        martin:radius="40dp" >
+    </com.martin.view.RoundProgressBar>
+
+    <com.martin.view.RoundProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:progress="25"
+        martin:progressBar_reach_color="#ff0000"
+        martin:progressBar_text_color="#ff0000"
+        martin:progressBar_unreach_color="#44ff0000"
+        martin:radius="20dp" >
+    </com.martin.view.RoundProgressBar>
 
 </LinearLayout>

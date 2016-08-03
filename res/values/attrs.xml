@@ -22,5 +22,8 @@
         <attr name="progressBar_text_size"></attr>
         <attr name="progressBar_text_offset"></attr>
     </declare-styleable>
+    <declare-styleable name="RoundPB">
+        <attr name="radius" format="dimension"></attr>
+    </declare-styleable>
 
 </resources>
