@@ -38,9 +38,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:progress="0"
-        martin:progressBar_reach_color="#ff0000"
-        martin:progressBar_text_color="#ff0000"
-        martin:progressBar_unreach_color="#44ff0000"
+        martin:progressBar_reach_color="#5592FB"
+        martin:progressBar_text_color="#5592FB"
+        martin:progressBar_unreach_color="#445592FB"
         martin:radius="40dp" >
     </com.martin.view.RoundProgressBar>
 

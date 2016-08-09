@@ -37,4 +37,37 @@
             android:text="progressBar" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#11000000"
+        android:orientation="horizontal"
+        android:padding="2dp"
+        android:weightSum="3" >
+
+        <Button
+            android:id="@+id/imageView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:text="ZoomImage" />
+
+        <Button
+            android:id="@+id/indexbar2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:text="IndexBar" />
+
+        <Button
+            android:id="@+id/progressBar2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:text="progressBar" />
+    </LinearLayout>
+
 </LinearLayout>

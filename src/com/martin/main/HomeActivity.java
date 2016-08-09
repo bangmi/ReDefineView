@@ -14,6 +14,7 @@ public class HomeActivity extends Activity implements OnClickListener {
 	private Button indicator;
 	private Button indexBar;
 	private Button progressBar;
+	private Button imageView;
 	private Intent intent = new Intent();
 
 	@Override
@@ -28,10 +29,12 @@ public class HomeActivity extends Activity implements OnClickListener {
 		indicator = (Button) findViewById(R.id.indicator);
 		indexBar = (Button) findViewById(R.id.indexbar);
 		progressBar=(Button) findViewById(R.id.progressBar);
+		imageView=(Button) findViewById(R.id.imageView);
 		
 		indicator.setOnClickListener(this);
 		indexBar.setOnClickListener(this);
 		progressBar.setOnClickListener(this);
+		imageView.setOnClickListener(this);
 	}
 
 	@Override
@@ -48,6 +51,10 @@ public class HomeActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.progressBar:
 			intent.setClass(this, ProgressBarActivity.class);
+			startActivity(intent);
+			break;
+		case R.id.imageView:
+			intent.setClass(this, ZoomImageActivity.class);
 			startActivity(intent);
 			break;
 		}

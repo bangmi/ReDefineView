@@ -26,7 +26,7 @@ public class RoundProgressBar extends HorizontalProgressBar {
 		mPaint.setDither(true);
 		// 连接交界处设置圆形弧度
 		mPaint.setStrokeCap(Cap.ROUND);
-		
+
 	}
 
 	public RoundProgressBar(Context context, AttributeSet attrs) {
@@ -45,9 +45,7 @@ public class RoundProgressBar extends HorizontalProgressBar {
 		mReachHeight = (int) (mUnReachHeight * 2.5f);
 
 		TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.RoundPB);
-		System.out.println(mRadiu);
 		mRadiu = (int) ta.getDimension(R.styleable.RoundPB_radius, 10);
-		System.out.println(mRadiu);
 		ta.recycle();
 	}
 
@@ -85,12 +83,11 @@ public class RoundProgressBar extends HorizontalProgressBar {
 		mPaint.setStrokeWidth(mReachHeight);
 		float angle = getProgress() * 1.0f / getMax() * 360f;
 		canvas.drawArc(rectF, 0, angle, false, mPaint);
-		//draw text
+		// draw text
 		mPaint.setStyle(Style.FILL);
 		mPaint.setTextSize(mTextSize);
 		mPaint.setColor(mTextColor);
-		canvas.drawText(text, mRadiu-textWidth/2, mRadiu-textHeight, mPaint);
-
+		canvas.drawText(text, mRadiu - textWidth / 2, mRadiu - textHeight, mPaint);
 		canvas.restore();
 	}
 }

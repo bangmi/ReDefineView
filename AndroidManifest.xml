@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="14"
+        android:minSdkVersion="16"
         android:targetSdkVersion="18" />
 
     <application
@@ -25,6 +25,7 @@
         <activity android:name="com.martin.main.IndexBarActivity" />
         <activity android:name="com.martin.main.IndicatorActivity" />
         <activity android:name="com.martin.main.ProgressBarActivity" />
+        <activity android:name="com.martin.main.ZoomImageActivity" />
     </application>
 
 </manifest>
