@@ -8,6 +8,6 @@
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/g1" />
+        android:src="@drawable/pic" />
 
 </LinearLayout>
