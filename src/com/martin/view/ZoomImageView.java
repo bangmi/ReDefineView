@@ -1,19 +1,21 @@
 package com.martin.view;
 
-import android.R.integer;
+import android.R;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageView;
-import android.view.View.OnTouchListener;
 
 public class ZoomImageView extends ImageView implements OnGlobalLayoutListener,
 		OnScaleGestureListener, OnTouchListener {
@@ -29,8 +31,11 @@ public class ZoomImageView extends ImageView implements OnGlobalLayoutListener,
 	private float mMidScanle;
 	// 图像变化控制的矩阵
 	private Matrix mMatrix;
+
 	// 多指触控操作的控制图片的放大缩小
 	private ScaleGestureDetector mScaleGestureDetector;
+	// 双击触控
+	private GestureDetector mGestureDetector;
 
 	// ------自由移动---------
 
@@ -45,10 +50,76 @@ public class ZoomImageView extends ImageView implements OnGlobalLayoutListener,
 	public ZoomImageView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		mMatrix = new Matrix();
-		super.setScaleType(ScaleType.MATRIX);
-		mScaleGestureDetector = new ScaleGestureDetector(context, this);
+		this.setScaleType(ScaleType.MATRIX);
 		this.setOnTouchListener(this);
+		this.setBackgroundColor(context.getResources().getColor(R.color.black));
 		mtouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+		mScaleGestureDetector = new ScaleGestureDetector(context, this);
+		mGestureDetector = new GestureDetector(getContext(), simpleOnGestureListener);
+	}
+
+	private boolean isScanning=false;
+	protected GestureDetector.SimpleOnGestureListener simpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
+		public boolean onDoubleTap(MotionEvent e) {
+			if (isScanning) return true;
+			int x = (int) e.getX();
+			int y = (int) e.getY();
+			if (getScale() < mMidScanle) {
+				//没有动画的缩放
+//				mMatrix.postScale(mMidScanle / getScale(), mMidScanle / getScale(), x, y);
+//				checkBorder();
+//				ZoomImageView.this.setImageMatrix(mMatrix);
+				postDelayed(new AutoScaleRunnable(mMidScanle, x, y), 0);
+				isScanning=true;
+			} else {
+//				mMatrix.postScale(mInitScanle / getScale(), mInitScanle / getScale(), x, y);
+//				checkBorder();
+//				ZoomImageView.this.setImageMatrix(mMatrix);
+				postDelayed(new AutoScaleRunnable(mInitScanle, x, y), 0);
+				isScanning=true;
+			}
+			return true;
+		}
+	};
+	private float tmpScale;
+	private float currentScale;
+	private float BIGGER=1.05f;
+	private float SMALL=0.95f;
+	private class AutoScaleRunnable implements Runnable {
+		private float mTargetScale;
+		private float x;
+		private float y;
+
+		public AutoScaleRunnable(float mTargetScale, float x, float y) {
+			super();
+			this.mTargetScale = mTargetScale;
+			this.x = x;
+			this.y = y;
+			if (getScale()<mTargetScale) {
+				tmpScale=BIGGER;
+			}else if(getScale()>mTargetScale){
+				tmpScale=SMALL;
+			}
+		}
+
+		@Override
+		public void run() {
+			mMatrix.postScale(tmpScale, tmpScale, x, y);
+			checkBorder();
+			setImageMatrix(mMatrix);
+			
+			currentScale=getScale();
+			if ((currentScale<mTargetScale&&tmpScale>1.0f)||(currentScale>mTargetScale&&tmpScale<1.0f)) {
+				postDelayed(this, 16);
+			}else{
+				mMatrix.postScale(mTargetScale/getScale(), mTargetScale/getScale(), x, y);
+				checkBorder();
+				setImageMatrix(mMatrix);
+				isScanning=false;
+			}
+
+		}
+
 	}
 
 	@Override
@@ -64,6 +135,9 @@ public class ZoomImageView extends ImageView implements OnGlobalLayoutListener,
 	}
 
 	// 布局layout结束后
+	private int dw;
+	private int dh;
+
 	@Override
 	public void onGlobalLayout() {
 		if (isOnec) {
@@ -72,12 +146,12 @@ public class ZoomImageView extends ImageView implements OnGlobalLayoutListener,
 			int width = getWidth();
 			int height = getHeight();
 			// 图片的尺寸
-			Drawable drawable = getDrawable();
+			Drawable drawable = this.getDrawable();
 			if (drawable == null) {
 				return;
 			}
-			int dw = drawable.getIntrinsicWidth();
-			int dh = drawable.getIntrinsicHeight();
+			dw = drawable.getIntrinsicWidth();
+			dh = drawable.getIntrinsicHeight();
 			// 初始化时匹配屏幕,四种情况，宽度越界、高度越界、全部越界、全部没越界
 			float scanle = 1.0f;
 			if (dw >= width && dh <= height) {
@@ -93,21 +167,22 @@ public class ZoomImageView extends ImageView implements OnGlobalLayoutListener,
 				scanle = Math.min(width * 1.0f / dw, height * 1.0f / width);
 			}
 			mInitScanle = scanle;
-			mMinScanle = mInitScanle / 2;
-			mMidScanle = mInitScanle * 2;
-			mMaxScanle = mInitScanle * 4;
+			mMinScanle = scanle / 2;
+			mMidScanle = scanle * 2;
+			mMaxScanle = scanle * 4;
 
 			int dx = getWidth() / 2 - dw / 2;
 			int dy = getHeight() / 2 - dh / 2;
 
 			mMatrix.postTranslate(dx, dy);
+			// 以某一点为中心点缩放图片
 			mMatrix.postScale(mInitScanle, mInitScanle, getWidth() / 2, getHeight() / 2);
 			setImageMatrix(mMatrix);
 		}
 	}
 
 	/**
-	 * 当前缩放的数值
+	 * 当前缩放的数值,这个值不是相对于初始化的图片缩放了多少，是指当前显示的图片相对于原始图片的缩放比例
 	 */
 	private float getScale() {
 		float[] values = new float[9];
@@ -155,7 +230,6 @@ public class ZoomImageView extends ImageView implements OnGlobalLayoutListener,
 	@Override
 	public void onScaleEnd(ScaleGestureDetector detector) {
 		if (getScale() < mInitScanle) {
-
 			mMatrix.postScale(mInitScanle / getScale(), mInitScanle / getScale(), getWidth() / 2,
 					getHeight() / 2);
 			this.setImageMatrix(mMatrix);
@@ -171,7 +245,7 @@ public class ZoomImageView extends ImageView implements OnGlobalLayoutListener,
 		float deltaY = 0;
 		float width = getWidth();
 		float height = getHeight();
-		// 宽度调整
+		// 防止出现白边 宽度调整
 		if (rectF.width() >= width) {
 			if (rectF.left > 0) {
 				deltaX = -rectF.left;
@@ -180,7 +254,7 @@ public class ZoomImageView extends ImageView implements OnGlobalLayoutListener,
 			}
 		}
 		// 高度调整
-		if (rectF.height() > height) {
+		if (rectF.height() >= height) {
 			if (rectF.top > 0) {
 				deltaY = -rectF.top;
 			} else if (rectF.bottom < height) {
@@ -196,7 +270,6 @@ public class ZoomImageView extends ImageView implements OnGlobalLayoutListener,
 			deltaY = height / 2f - rectF.height() / 2f - rectF.top;
 		}
 		mMatrix.postTranslate(deltaX, deltaY);
-
 	}
 
 	/**
@@ -205,9 +278,9 @@ public class ZoomImageView extends ImageView implements OnGlobalLayoutListener,
 	private RectF getMatrixRectF() {
 		Matrix matrix = mMatrix;
 		RectF rectF = new RectF();
-		Drawable drawable = getDrawable();
+		Drawable drawable = this.getDrawable();
 		if (drawable != null) {
-			rectF.set(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+			rectF.set(0, 0, dw, dh);
 			matrix.mapRect(rectF);
 		}
 		return rectF;
@@ -220,6 +293,9 @@ public class ZoomImageView extends ImageView implements OnGlobalLayoutListener,
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
+		if (mGestureDetector.onTouchEvent(event)) {
+			return true;
+		}
 		mScaleGestureDetector.onTouchEvent(event);
 		float tx = 0;
 		float ty = 0;
@@ -231,6 +307,7 @@ public class ZoomImageView extends ImageView implements OnGlobalLayoutListener,
 		}
 		tx /= pointCount;
 		ty /= pointCount;
+		// 防止触控点数变化时造成图像瞬移
 		if (pointCount != mLastPointCount) {
 			mLastX = tx;
 			mLastY = ty;
@@ -257,7 +334,7 @@ public class ZoomImageView extends ImageView implements OnGlobalLayoutListener,
 				}
 
 				mMatrix.postTranslate(dx, dy);
-				//移动的边界检测
+				// 移动的边界检测
 				RectF moveRectF = getMatrixRectF();
 				if (moveRectF.left > 0 || moveRectF.right < getWidth()) {
 					mMatrix.postTranslate(-dx, 0);
